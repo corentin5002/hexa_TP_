@@ -1,24 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "./library.h"
-
+#include "./functions/UI_functions.h"
 
 
 int main(int argc , char ** argv)
 {
-//    maillon_t * file = (maillon_t *) malloc(sizeof(maillon_t));
-//
-//    int date = 12122012;
-//    for (int heure = 1200; heure < 1260; ++heure) {
-//
-////        ajoutMaillonFin(file, date, heure, "TEST : Commentaire");
-//        printf("heure : %d\n", heure);
-//    }
-////    afficherFile(file);
-//    freeFile(file);
-//
+    calendarEvent * file = (calendarEvent *) malloc(sizeof(calendarEvent));
+
+    int date = 12122012;
+    for (int heure = 1200; heure < 1260; ++heure) {
+
+        ajoutMaillonFin(file, date, heure, "TEST : Commentaire");
+        printf("heure : %d\n", heure);
+    }
+//    afficherFile(file);
+
 //    dateStrToInt("12e05/8492");
 
-    check_input_menu();
+//    checkInputMenu("Aventure_en_mordor");
+    showCalendar(file);
+
+    freeFile(file);
+
     return 0;
 }

@@ -1,21 +1,18 @@
 #ifndef ESSAI_T
 #define ESSAI_T
 
-#define MAX_VALUE_MENU 4
+#define MAX_VALUE_MENU 5
 
-typedef struct maillon {
+typedef struct calendarEvent {
     int date;
     int heure;
     char commentaire[200];
-    struct maillon * next;
-} maillon_t;
+    struct calendarEvent * next;
+} calendarEvent;
 
-int afficherFile    (maillon_t* file);
-int popFile         (maillon_t* file);
-int freeFile        (maillon_t* file);
-void ajoutMaillonFin   (maillon_t* file, int date, int heure, char * commentaire);
+int afficherFile    (calendarEvent* file);
+int popFile         (calendarEvent* file);
+int freeFile        (calendarEvent* file);
+void ajoutMaillonFin   (calendarEvent* file, int date, int heure, char * commentaire);
 int dateStrToInt( char * date);
-int check_input_menu();
-
-
 #endif
