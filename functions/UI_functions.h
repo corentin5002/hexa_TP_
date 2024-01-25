@@ -4,6 +4,8 @@
 #include "library.h"
 
 int checkInputMenu(char * nameCalendar);
-void showCalendar(calendarEvent * calendar);
-
+void inputEvent(/*calendarEvent * calendar*/);
+void printCalendar(calendarEvent * calendar);
+int checkDateValue(int day, int month, int year);
+void inputSupprEvent(calendarEvent * calendar);
 #endif

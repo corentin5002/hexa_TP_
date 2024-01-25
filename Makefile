@@ -1,4 +1,4 @@
-#On purge la liste des suffixes utilis? pour les r?les implicites
+#On purge la liste des suffixes utilis? pour les rèles implicites
 .SUFFIXES:
 
 #On ajoute simplements les extensions dont l'on a besoin
@@ -8,7 +8,7 @@
 EXEC=main
 
 #Liste des fichiers sources separes par des espaces
-SOURCES=main.c library.c
+SOURCES=main.c functions/library.c functions/UI_functions.c
 #Liste des fichiers objets
 OBJETS=$(SOURCES:%.c=%.o)
 
@@ -37,4 +37,5 @@ depend:
 
 #DEPENDANCIES
 main.o: main.c library.o
-library.o: library.c library.h
+library.o: functions/library.c functions/library.h
+UI_functions.o: functions/UI_functions.c functions/UI_functions.h

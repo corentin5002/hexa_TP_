@@ -10,14 +10,14 @@ Gestion d'entrée de l'utilisateur :
 - mois entre 0 et 12
 - annee entre 2024 et infinie (ptit message si c'est plus de 120)
 
-- preciser que le commentaire ne peut pas faire plus de x caractères
+- preciser que le commentary ne peut pas faire plus de x caractères
 
 ### Sortie
 
 
 ## Heure :
 
-Gestion d'entrée de l'heure :
+Gestion d'entrée de l'hour :
 
 - Heure de 0 à 23
 - minutes de 0 à 59
