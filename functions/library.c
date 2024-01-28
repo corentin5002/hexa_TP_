@@ -36,7 +36,6 @@ void addEvent(calendarEvent * calendar, int date, int hour, char *commentary) {
 
 
     while (cursor->next != NULL) {
-        printf("debug date : %d hour : %d\n", cursor->next->date, cursor->next->hour);
         if (cmpDate(cursor->next->date, date) || (cmpDate(cursor->next->date, date) && cursor->next->hour >= hour)) {
             break;
         }
@@ -90,13 +89,11 @@ calendarEvent * suppressEvent(calendarEvent * calendar, int date, int hour) {
 
         }
     }
-    printf("DEBUG testLast : %d testFirst : %d\n", testLast, testFirst);
 
     calendarEvent *eventToDelete = NULL;
 
     if(testFirst){
         // If the event to delete is the first one
-        printf("DEBUG testFirst\n");
         eventToDelete = cursor;
         calendar = cursor->next;
     }
@@ -107,32 +104,10 @@ calendarEvent * suppressEvent(calendarEvent * calendar, int date, int hour) {
         eventToDelete = cursor->next;
         cursor->next = NULL;
     }
-
-    printf("DEBUG  eventToDelete : %d\n", eventToDelete->date);
     free(eventToDelete);
 
     return calendar;
 }
-
-
-// return the date of the last event of the calendar
-int popCalendar(calendarEvent *calendar) {
-    calendarEvent *cursor = calendar;
-
-    while (cursor->next->next != NULL) {
-        cursor = cursor->next;
-    }
-
-    int valueLast = cursor->next->date;
-    free(cursor->next);
-
-    cursor->next = NULL;
-
-    return valueLast;
-}
-
-//refaire fonction pour une non récursive
-
 
 int freeCalendar(calendarEvent *calendar){
     calendarEvent * cursor = calendar;

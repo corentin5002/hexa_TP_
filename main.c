@@ -5,7 +5,7 @@
 #include "./functions/UI_functions.h"
 
 
-int main(int argc , char ** argv)
+int main()
 {
     calendarEvent * calendar = (calendarEvent *) malloc(sizeof(calendarEvent));
     calendar->next = NULL;
@@ -15,14 +15,9 @@ int main(int argc , char ** argv)
     char * calendarName = (char *) malloc(sizeof(char) * 50);
     strcpy(calendarName, "no named calendar");
 
-    initiateCalendar(calendar, 29052024, 1200, "t");
-    addEvent(calendar, 28052024, 1100, "t");
-    addEvent(calendar, 30052024, 1300, "t");
-
-
     while (!quit) {
         int selection = -1;
-        selection = inputMenu(calendar, calendarName);
+        selection = inputMenu(calendarName);
 
         switch (selection) {
             case 0:
@@ -43,6 +38,7 @@ int main(int argc , char ** argv)
                 char * calendarNameToOpen = inputCalendarName();
                 freeCalendar(calendar);
                 calendar = openCalendar(calendarNameToOpen, calendarName);
+                free(calendarNameToOpen);
                 break;
             case 4:
                 printf("Save your calendar\n\n");
@@ -85,6 +81,7 @@ int main(int argc , char ** argv)
                     if(input[0] == 'y'){
                         printf("\nQuitting the application\n");
                         freeCalendar(calendar);
+                        free(calendarName);
 
                         verifyQuit = 1;
                         quit = 1;

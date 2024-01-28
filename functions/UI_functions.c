@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int inputMenu(calendarEvent * calendar, char * nameCalendar) {
+int inputMenu(char * nameCalendar) {
 
     char input[10];
     int selection;

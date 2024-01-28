@@ -3,7 +3,7 @@
 
 #include "library.h"
 
-int inputMenu(calendarEvent * calendar, char * nameCalendar);
+int inputMenu(char * nameCalendar);
 void inputEvent(calendarEvent * calendar);
 void printCalendar(calendarEvent * calendar);
 int checkDateValue(int day, int month, int year);
