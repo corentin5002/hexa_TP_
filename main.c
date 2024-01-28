@@ -6,54 +6,72 @@
 
 int main(int argc , char ** argv)
 {
-//    calendarEvent * calendar = (calendarEvent *) malloc(sizeof(calendarEvent));
-//
-//    int date = 25022024;
-//    int hour = 1825;
-//    char commentary[200] = "Bonjour la plèbe";
-//    calendar->next = NULL;
-//
-//    initiateCalendar(calendar, date, hour, commentary);
-//    addEventEnd(calendar, 26022024, 1730, "Rendu TP");
-//    addEventEnd(calendar, 12042024, 1730, "Se branler");
-//    addEventEnd(calendar, 12042024, 1735, "Se nettoyer");
-//
-//    addEvent(calendar, 12042024, 1700 , "Prendre des mouchoirs");
-//    suppressEvent(calendar, 12042024, 1730);
-//
-//    printf("\n\n");
-//    printCalendar(calendar);
-//
-////    checkInputMenu("Aventure_en_mordor");
-//
-//    inputSupprEvent(calendar);
-//
-//    freeCalendar(calendar);
+    calendarEvent * calendar = (calendarEvent *) malloc(sizeof(calendarEvent));
+    calendar->next = NULL;
+    calendar->date = 0;
 
+    int quit = 0;
+//    char
+    char calendarName[50] = "Ballade en terre du milieu";
 
-    openCalendar("./calendar_saves/rencontreEnPapouasie.cld");
+    while (!quit) {
+        int selection = -1;
+        selection = inputMenu(calendar, calendarName);
 
+        switch (selection) {
+            case 0:
+                printf("\nAdd an event to your current calendar\n");
+                inputEvent(calendar);
 
-//    inputEvent();
-//    int i = dateIntCalendar(12, 01, 2024);
-//
-//    char * str = (char *) malloc(sizeof(char) * 11);
-//
-//
-//    printf("Date is valid %s\n", checkDateValue(28, 02, 1900) ? "true" : "false");
-//    dateIntToStr(i, str);
-//    printf("date %s\n", str);
-//
-//
-//    int time = hourIntCalendar(12, 30);
-//    printf("time : %d\n", time);
-//    char * strHour = (char *) malloc(sizeof(char) * 6);
-//    hourIntToStr(time, strHour);
-//    printf("test %s\n", strHour);
+//                printCalendar(calendar);
+                break;
+            case 1:
+                printf("Remove an event from your agenda\n");
+                inputSupprEvent(calendar);
+                break;
+            case 2:
+                printf("Show the calendar\n");
+                printCalendar(calendar);
+                break;
+            case 3:
+                printf("\nLoad a calendar\n");
+                char * calendarNameToOpen = inputCalendarName(calendarName);
+                printf("DEBUG : %s\n", calendarName);
+                printf("DEBUG2 : %s\n", calendarNameToOpen);
+                freeCalendar(calendar);
+                calendar = openCalendar(calendarNameToOpen);
+                break;
+            case 4:
+                printf("Export your calendar\n");
+                break;
+            case 5:
+                printf("");
+                int verifyQuit;
+                verifyQuit = 0;
+                while (!verifyQuit){
+                    printf("Are you sure you want to quit ? (y/n): \n");
 
+                    char input[2];
+                    fgets(input, sizeof(input), stdin); // Read the entire line
+                    clearInputBuffer();
+                    if(input[0] == 'y'){
+                        printf("\nQuitting the application\n");
+                        freeCalendar(calendar);
 
+                        verifyQuit = 1;
+                        quit = 1;
+                        printf("Goodbye and have a nice day !\n", quit);
+                    } else if(input[0] == 'n'){
+                        verifyQuit = 1;
+                    } else {
+                        printf("Invalid input. Please enter a number.\n");
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
-//    free(strHour);
-//    free(str);
     return 0;
 }

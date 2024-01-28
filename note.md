@@ -41,3 +41,9 @@ demander sauvegarde de l'état de l'agenda ou bien prévenir que l'on perdra tou
 ## add event 
 
 demander date
+
+
+
+## Jeu d'éssai
+
+Faire une phrase avec ce qu'on teste et que ça affiche.

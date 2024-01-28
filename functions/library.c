@@ -13,6 +13,7 @@ void initiateCalendar(calendarEvent * calendar, int date, int hour, char *commen
     calendar->next = NULL;
 }
 
+// TODO: Ecrase la dérnière valeur du calendrier ?
 void addEventEnd(calendarEvent * calendar, int date, int hour, char *commentary) {
     calendarEvent *cursor = calendar;
 
@@ -96,17 +97,21 @@ int popCalendar(calendarEvent *calendar) {
 }
 
 //refaire fonction pour une non récursive
-int freeCalendar(calendarEvent *calendar) {
 
-    if (calendar->next == NULL) {
-        free(calendar);
-        return 0;
+
+int freeCalendar(calendarEvent *calendar){
+    calendarEvent * cursor = calendar;
+    calendarEvent * next = calendar->next;
+
+    while(next != NULL){
+        free(cursor);
+        cursor = next;
+        next = next->next;
     }
-
-    freeCalendar(calendar->next);
-    free(calendar);
+    free(cursor);
     return 0;
 }
+
 
 calendarEvent * findEvent(calendarEvent * calendar, int selection) {
     calendarEvent *cursor = calendar;
@@ -133,7 +138,7 @@ int dateIntCalendar(int day, int month, int year){
     date += month * (int) pow(10, 4);
     date += year;
 
-    printf("date : %d\n", date);
+    printf("DEBUG date : %08d\n", date);
 
     return date;
 }
@@ -144,7 +149,9 @@ int checkDateValue(int day, int month, int year){
     int testValue = 1;
     // Maximum date value : 31/12/9999
     // Minimum date value : 01/01/1900
-    if ((date < 1011900 || date > 31129999)){
+
+    if (cmpDate(1011900, date) || cmpDate(date, 31129999)) {
+        printf("\nInvalid date, not include in ] 01/01/1900; 31/12/9999 [\n");
         testValue = 0;
     }
 
@@ -180,7 +187,9 @@ void dateIntToStr(int date, char * ouputStr){
     char strDateFormat[11];
 
     // Convert the integer to a string
-    sprintf(strDate, "%d", date);
+
+    // Check if the day of the date is compose of 2 or 1 digit
+    date > (int) pow(10,7) ? sprintf(strDate, "%d", date) : sprintf(strDate, "0%d", date);
 
     // We format the previous string to the dd/mm/yyyy format
     strncpy(strDateFormat, strDate, 2);
@@ -195,15 +204,15 @@ void dateIntToStr(int date, char * ouputStr){
 }
 
 int cmpDate(int date1, int date2){
-    int testValue = 1;
+    // return 1 if date1 >= date2
 
-    int day1 = date1 / (int) pow(10, 6);
-    int month1 = (date1 % (int) pow(10, 6)) / (int) pow(10, 4);
-    int year1 = date1 % (int) pow(10, 4);
+    int day1    = date1 / (int) pow(10, 6);
+    int month1  =(date1 % (int) pow(10, 6)) / (int) pow(10, 4);
+    int year1   = date1 % (int) pow(10, 4);
 
-    int day2 = date2 / (int) pow(10, 6);
-    int month2 = (date2 % (int) pow(10, 6)) / (int) pow(10, 4);
-    int year2 = date2 % (int) pow(10, 4);
+    int day2    = date2 / (int) pow(10, 6);
+    int month2  =(date2 % (int) pow(10, 6)) / (int) pow(10, 4);
+    int year2   = date2 % (int) pow(10, 4);
 
     date1 = day1 + month1 * 100 + year1 * 10000;
     date2 = day2 + month2 * 100 + year2 * 10000;
@@ -226,7 +235,12 @@ void hourIntToStr(int hour, char * ouputStr){
     char strHour[5];
     char strHourFormat[6];
 
-    sprintf(strHour, "%d", hour);
+
+    //checking if the hour is composed of 1 to 4 digit
+    hour < 10 ?   sprintf(strHour, "000%d", hour) :
+    hour < 100 ?  sprintf(strHour, "00%d", hour) :
+    hour < 1000 ? sprintf(strHour, "0%d", hour) :
+                  sprintf(strHour, "%d", hour);
 
     // We format the previous string to the hh:mm format
     strncpy(strHourFormat, strHour, 2);
@@ -259,14 +273,68 @@ int checkHourValue(int hour, int minute){
 //endregion
 
 //region Save calendar functions
-void openCalendar(char * pathToCalendar) {
+calendarEvent * openCalendar(char * pathToCalendar) {
     FILE *calendarSave;
-    char detectEOF;
+    char buffer[214];
 
     calendarSave = fopen(pathToCalendar, "r");
 
-    while (fscanf(calendarSave, "%c", &detectEOF) != EOF) {
-        printf("%c", detectEOF);
+    if (calendarSave == NULL){
+        printf("Error while opening the file\n");
+        return NULL;
     }
+
+    // Get name of the calendar by its path
+    char * calendarName = strrchr(pathToCalendar, '/') + 1;
+    printf("DEBUG calendar name: %s\n", calendarName);
+
+    int date, hour, firstLine = 1;
+    char commentary[200] = {0};
+    calendarEvent * calendar = (calendarEvent *) malloc(sizeof(calendarEvent));
+
+
+    //Read the file line by line to get events of the calendar
+    while (fscanf(calendarSave, "%213[^\n]\n", buffer) != EOF) {
+        printf("read line : %s\n", buffer);
+        if(sscanf(buffer, "%d|%d|%199[^\n]", &date, &hour, commentary) == 3) {
+            if (firstLine){
+                initiateCalendar(calendar, date, hour, commentary);
+                firstLine = 0;
+            } else{
+                addEventEnd(calendar, date, hour, commentary);
+            }
+            printf("date : %d hour : %d commentary : %s\n", date, hour, commentary);
+
+        } else{
+            printf("Something went wrong while reading the file\n");
+        }
+    }
+
+    fclose(calendarSave);
+
+    return calendar;
+}
+
+void saveCalendar(calendarEvent * calendar, char * pathToCalendar){
+    FILE * calendarSave;
+
+    calendarSave = fopen(pathToCalendar, "w");
+    calendarEvent *cursor = calendar;
+
+    if (calendarSave == NULL){
+        printf("Error while opening the file\n");
+        return;
+    } else {
+        while (cursor != NULL) {
+            fprintf(calendarSave, "%d|%d|%s\n", cursor->date, cursor->hour, cursor->commentary);
+            cursor = cursor->next;
+        }
+    }
+    fclose(calendarSave);
 }
 //endregion
+
+void clearInputBuffer() {
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+}

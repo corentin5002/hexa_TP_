@@ -36,8 +36,10 @@ void hourIntToStr (int date, char * ouputStr);
 //endregion
 
 //region Save calendar functions
-void openCalendar(char * pathToCalendar);
+calendarEvent * openCalendar(char * pathToCalendar);
+void saveCalendar(calendarEvent * calendar, char * pathToCalendar);
 //endregion
 
+void clearInputBuffer();
 
 #endif
