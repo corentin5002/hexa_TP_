@@ -1,5 +1,8 @@
 # TP1 : Calendar 
 
+- Author : Corentin Sabier
+- Date : 26-01-2024
+
 ## How to compile and launch the program
 
 Execute `make` in the project folder and then execute with `./main`
