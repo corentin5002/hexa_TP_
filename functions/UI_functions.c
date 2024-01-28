@@ -166,7 +166,7 @@ calendarEvent * inputSupprEvent(calendarEvent *calendar){
             dateIntToStr(cursor->date, strDate);
             hourIntToStr(cursor->hour, strHour);
 
-            printf("| %d | %s | %s | %s \n", selectionList , strDate, strHour, cursor->commentary);
+            printf("| %02d | %s | %s | %s \n", selectionList , strDate, strHour, cursor->commentary);
             cursor = cursor->next;
             selectionList += 1;
         }
