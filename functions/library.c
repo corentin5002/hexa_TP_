@@ -59,7 +59,7 @@ void addEvent(calendarEvent * calendar, int date, int hour, char *commentary) {
         cursor -> hour = hour;
         strcpy(cursor->commentary, commentary);
 
-        newEvent->next = NULL;
+        newEvent->next = calendar->next;
         cursor->next = newEvent;
 
     } else {
@@ -308,7 +308,6 @@ calendarEvent * openCalendar(char * pathNewCalendar, char * calendarPreviousName
 
     //Read the file line by line to get events of the calendar
     while (fscanf(calendarSave, "%213[^\n]\n", buffer) != EOF) {
-        printf("read line : %s\n", buffer);
         if(sscanf(buffer, "%d|%d|%199[^\n]", &date, &hour, commentary) == 3) {
             if (firstLine){
                 initiateCalendar(calendar, date, hour, commentary);
@@ -316,7 +315,6 @@ calendarEvent * openCalendar(char * pathNewCalendar, char * calendarPreviousName
             } else{
                 addEventEnd(calendar, date, hour, commentary);
             }
-            printf("date : %d hour : %d commentary : %s\n", date, hour, commentary);
 
         } else{
             printf("Something went wrong while reading the file\n");
