@@ -19,8 +19,6 @@ int popCalendar (calendarEvent* calendar);
 int freeCalendar (calendarEvent* calendar);
 calendarEvent * findEvent (calendarEvent* calendar, int selection);
 
-//Check and conversion functions
-
 //region Date functions
 int dateIntCalendar (int day, int month, int year);
 int cmpDate (int date1, int date2);

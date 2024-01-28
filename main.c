@@ -29,7 +29,6 @@ int main(int argc , char ** argv)
                 printf("\nAdd an event to your current calendar\n\n");
                 inputEvent(calendar);
 
-//                printCalendar(calendar);
                 break;
             case 1:
                 printf("Remove an event from your agenda\n\n");
