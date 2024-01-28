@@ -10,7 +10,7 @@ int inputMenu(calendarEvent * calendar, char * nameCalendar) {
     int selection;
 
     do {
-        printf("You are working with the calendar named : %s\n"
+        printf("\n\nYou are working with the calendar named : %s\n"
                "Here are the options available : \n\n"
                "0 - Add an event to your current calendar\n"
                "1 - Remove an event from your agenda\n"
@@ -44,7 +44,7 @@ int inputMenu(calendarEvent * calendar, char * nameCalendar) {
         }
     } while (1);
 
-    printf("DEBUG You entered: %d\n", selection);
+    printf("\n");
 
     return selection;
 }
@@ -61,7 +61,6 @@ void inputEvent(calendarEvent * calendar){
         clearInputBuffer();
 
         if(sscanf(inputDate, "%02d/%02d/%04d", &day, &month, &year) == 3 && checkDateValue(day, month, year)) {
-            printf("DEBUG Date input : %02d/%02d/%04d\n", day, month, year);
             isValidInput = 1;
 
         } else {
@@ -77,7 +76,6 @@ void inputEvent(calendarEvent * calendar){
         clearInputBuffer();
 
         if(sscanf(inputHour, "%02d:%02d", &hour, &minute) == 2 && checkHourValue(hour, minute)) {
-            printf("DEBUG Hour input %02d:%02d\n", hour, minute);
             isValidInput = 1;
         } else {
             printf("HOUR /!\\ Invalid input. Please enter a date with this format : 'hh:mm'\n\n");
@@ -86,7 +84,7 @@ void inputEvent(calendarEvent * calendar){
 
     isValidInput = 0;
     do {
-        printf("Enter a commentary for the event (max 200 characters) \n(if your commentary lengths is inferior to 199, press enter twice\n-> : ");
+        printf("Enter a commentary for the event (max 200 characters) \n(if your commentary lengths is inferior to 199, press enter twice)\n-> : ");
         fgets(inputComment, sizeof(inputComment), stdin);
         clearInputBuffer();
 
@@ -95,7 +93,6 @@ void inputEvent(calendarEvent * calendar){
 
         // check if the commentary contain the | character
         if(strchr(inputComment, '|') == NULL){
-            printf("DEBUG Commentary : %s\n", inputComment);
             isValidInput = 1;
         } else {
             printf("/!\\ Invalid input. Please enter a commentary without the | character\n\n");
@@ -112,9 +109,9 @@ void inputEvent(calendarEvent * calendar){
         printf("we initiate the calendar\n");
     } else {
         addEvent(    calendar,
-                        dateIntCalendar(day, month, year),
-                        hourIntCalendar(hour, minute),
-                        inputComment
+                    dateIntCalendar(day, month, year),
+                    hourIntCalendar(hour, minute),
+                    inputComment
                     );
         printf("we add an event\n");
     }
@@ -124,83 +121,91 @@ void inputEvent(calendarEvent * calendar){
 void printCalendar(calendarEvent *calendar) {
     calendarEvent *cursor = calendar;
 
-    printf("State of current calendar : \n\n");
-    printf("|    Date    | Hour  | Commentary \n"
-           "|------------|-------|------------------------------------------------------------------------>\n"
-    );
-
-    while (cursor != NULL) {
-        // Conversion from int to str formatted
-        char strDate[11], strHour[6];
-
-        dateIntToStr(cursor->date, strDate);
-        hourIntToStr(cursor->hour, strHour);
-
-        printf("| %s | %s | %s \n", strDate, strHour, cursor->commentary);
-        cursor = cursor->next;
-    }
-    printf("\n");
-}
-
-void inputSupprEvent(calendarEvent *calendar){
-    calendarEvent *cursor = calendar;
-
-    int selectionList = 0;
-    int selection = -1;
-    char input[5];
-
-    printf("State of current calendar : \n\n");
-    printf("| n° |    Date    | Hour  | Commentary \n"
-           "|----|------------|-------|------------------------------------------------------------------------>\n"
-    );
-
-    while (cursor != NULL) {
-        // Conversion from int to str formatted
-        char strDate[11], strHour[6];
-
-
-        dateIntToStr(cursor->date, strDate);
-        hourIntToStr(cursor->hour, strHour);
-
-        printf("| %d | %s | %s | %s \n", selectionList , strDate, strHour, cursor->commentary);
-        cursor = cursor->next;
-        selectionList += 1;
-    }
-
-    do {
-        printf("\nEnter the number of the event you want to delete : ");
-        fgets(input, sizeof(input), stdin);
-
-        if((sscanf(input, "%d", &selection) == 1) && (selection >= 0) && (selection < selectionList)){
-            calendarEvent * eventToSuppr =  findEvent(calendar, selection);
-
+    if (cursor->next == NULL && cursor->date == 0) {
+        printf("Your calendar is empty\n");
+    } else {
+        printf("State of current calendar : \n\n");
+        printf("|    Date    | Hour  | Commentary \n"
+               "|------------|-------|------------------------------------------------------------------------>\n"
+        );
+        while (cursor != NULL) {
+            // Conversion from int to str formatted
             char strDate[11], strHour[6];
 
-            dateIntToStr(eventToSuppr->date, strDate);
-            hourIntToStr(eventToSuppr->hour, strHour);
+            dateIntToStr(cursor->date, strDate);
+            hourIntToStr(cursor->hour, strHour);
 
-            printf(
-                    "\nYou entered : %d \nEvent to suppress | %s | %s | %s\n\n",
-                    selection,
-                    strDate,
-                    strHour,
-                    eventToSuppr->commentary
-                    );
-
-            suppressEvent(calendar, eventToSuppr->date, eventToSuppr->hour);
-
-        } else {
-            printf("Invalid input. Please enter a number between 0 and %d.\n", selectionList-1);
+            printf("| %s | %s | %s \n", strDate, strHour, cursor->commentary);
+            cursor = cursor->next;
         }
-    }while(selection == -1 || selection >= selectionList);
+        printf("\n");
+    }
 
 }
 
+calendarEvent * inputSupprEvent(calendarEvent *calendar){
+    calendarEvent *cursor = calendar;
 
-char *  inputCalendarName(char * pathToCalendar){
+    if(cursor->next == NULL && cursor->date == 0){
+        printf("Your calendar is empty, you have nothing to remove\n");
+    } else {
+        int selectionList = 0;
+        int selection = -1;
+        char input[5];
+
+        printf("State of current calendar : \n\n");
+        printf("| n° |    Date    | Hour  | Commentary \n"
+               "|----|------------|-------|------------------------------------------------------------------------>\n"
+        );
+
+        while (cursor != NULL) {
+            // Conversion from int to str formatted
+            char strDate[11], strHour[6];
+
+
+            dateIntToStr(cursor->date, strDate);
+            hourIntToStr(cursor->hour, strHour);
+
+            printf("| %d | %s | %s | %s \n", selectionList , strDate, strHour, cursor->commentary);
+            cursor = cursor->next;
+            selectionList += 1;
+        }
+
+        do {
+            printf("\nEnter the number of the event you want to delete : ");
+            fgets(input, sizeof(input), stdin);
+
+            if((sscanf(input, "%d", &selection) == 1) && (selection >= 0) && (selection < selectionList)){
+                calendarEvent * eventToSuppr =  findEvent(calendar, selection);
+
+                char strDate[11], strHour[6];
+
+                dateIntToStr(eventToSuppr->date, strDate);
+                hourIntToStr(eventToSuppr->hour, strHour);
+
+                printf(
+                        "\nYou entered : %d \nEvent to suppress | %s | %s | %s\n\n",
+                        selection,
+                        strDate,
+                        strHour,
+                        eventToSuppr->commentary
+                );
+
+                calendar = suppressEvent(calendar, eventToSuppr->date, eventToSuppr->hour);
+
+            } else {
+                printf("Invalid input. Please enter a number between 0 and %d.\n", selectionList-1);
+            }
+        }while(selection == -1 || selection >= selectionList);
+    }
+    return calendar;
+}
+
+
+char *  inputCalendarName(){
     char input[55];
 
-    printf("Enter the name of the calendar you want to open\n"
+    printf("Enter the name of the calendar you want   -- press enter twice to validate\n"
            "(max. length : 50 char. no whitespace and try not use prohibited character in file naming\n-> : ");
     fgets(input, sizeof(input), stdin);
     clearInputBuffer();

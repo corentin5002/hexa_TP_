@@ -14,7 +14,7 @@ typedef struct calendarEvent {
 void initiateCalendar (calendarEvent* calendar, int date, int hour, char * commentary);
 void addEventEnd (calendarEvent* calendar, int date, int hour, char * commentary);
 void addEvent (calendarEvent* calendar, int date, int hour, char * commentary);
-void suppressEvent (calendarEvent* calendar, int date, int hour);
+calendarEvent * suppressEvent (calendarEvent* calendar, int date, int hour);
 int popCalendar (calendarEvent* calendar);
 int freeCalendar (calendarEvent* calendar);
 calendarEvent * findEvent (calendarEvent* calendar, int selection);
@@ -36,7 +36,7 @@ void hourIntToStr (int date, char * ouputStr);
 //endregion
 
 //region Save calendar functions
-calendarEvent * openCalendar(char * pathToCalendar);
+calendarEvent * openCalendar(char * pathNewCalendar, char * calendarPreviousName);
 void saveCalendar(calendarEvent * calendar, char * pathToCalendar);
 //endregion
 

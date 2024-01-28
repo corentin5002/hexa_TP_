@@ -13,7 +13,6 @@ void initiateCalendar(calendarEvent * calendar, int date, int hour, char *commen
     calendar->next = NULL;
 }
 
-// TODO: Ecrase la dérnière valeur du calendrier ?
 void addEventEnd(calendarEvent * calendar, int date, int hour, char *commentary) {
     calendarEvent *cursor = calendar;
 
@@ -33,50 +32,86 @@ void addEventEnd(calendarEvent * calendar, int date, int hour, char *commentary)
 void addEvent(calendarEvent * calendar, int date, int hour, char *commentary) {
 
     calendarEvent *cursor = calendar;
+    int isFirst = 1;
+
 
     while (cursor->next != NULL) {
-        //check if the date and hour are inferior to the ones of the next event
-        if (cmpDate(cursor->next->date, date) && cursor->next->hour > hour) {
+        printf("debug date : %d hour : %d\n", cursor->next->date, cursor->next->hour);
+        if (cmpDate(cursor->next->date, date) || (cmpDate(cursor->next->date, date) && cursor->next->hour >= hour)) {
             break;
         }
         cursor = cursor->next;
+        isFirst = 0;
     }
 
     calendarEvent * newEvent = (calendarEvent *) malloc(sizeof(calendarEvent));
 
-    newEvent->date = date;
-    newEvent->hour = hour;
-    strcpy(newEvent->commentary, commentary);
+    if  (isFirst &&
+         cmpDate(cursor->date, date) && cursor->hour >= hour){
+        //exchange of the values between the previous first event and the new one
 
-    // Insert the new event in the calendar
-    newEvent->next = cursor->next;
-    cursor->next = newEvent;
+        // Previous first event
+        newEvent->date = cursor->date;
+        newEvent->hour = cursor->hour;
+        strcpy(newEvent->commentary, cursor->commentary);
+
+        // New first event
+        cursor -> date = date;
+        cursor -> hour = hour;
+        strcpy(cursor->commentary, commentary);
+
+        newEvent->next = NULL;
+        cursor->next = newEvent;
+
+    } else {
+        newEvent->date = date;
+        newEvent->hour = hour;
+        strcpy(newEvent->commentary, commentary);
+
+        // Insert the new event in the calendar
+        newEvent->next = cursor->next;
+        cursor->next = newEvent;
+    }
 }
 
-void suppressEvent(calendarEvent * calendar, int date, int hour) {
+calendarEvent * suppressEvent(calendarEvent * calendar, int date, int hour) {
 
-    int testLast = 1;
+    int testLast = 1, testFirst = 1, findEvent = 0;
     calendarEvent *cursor = calendar;
 
-    while (cursor->next != NULL) {
+    while (cursor->next != NULL && !findEvent) {
         //check if the date and hour are inferior to the ones of the next event
-        if (cmpDate(cursor->next->date, date) && cursor->next->hour > hour) {
+        if (cmpDate(cursor->next->date, date) && cursor->next->hour >= hour) {
             testLast = 0;
-            break;
+            findEvent = 1;
+        } else {
+            cursor = cursor->next;
+            testFirst = 0;
+
         }
-        cursor = cursor->next;
     }
+    printf("DEBUG testLast : %d testFirst : %d\n", testLast, testFirst);
 
     calendarEvent *eventToDelete = NULL;
 
-    if (!testLast) {
+    if(testFirst){
+        // If the event to delete is the first one
+        printf("DEBUG testFirst\n");
+        eventToDelete = cursor;
+        calendar = cursor->next;
+    }
+    else if (!testLast) {
         eventToDelete = cursor->next;
         cursor->next = cursor->next->next;
     } else {
         eventToDelete = cursor->next;
         cursor->next = NULL;
     }
+
+    printf("DEBUG  eventToDelete : %d\n", eventToDelete->date);
     free(eventToDelete);
+
+    return calendar;
 }
 
 
@@ -137,8 +172,6 @@ int dateIntCalendar(int day, int month, int year){
     date = day * (int) pow(10, 6);
     date += month * (int) pow(10, 4);
     date += year;
-
-    printf("DEBUG date : %08d\n", date);
 
     return date;
 }
@@ -273,11 +306,11 @@ int checkHourValue(int hour, int minute){
 //endregion
 
 //region Save calendar functions
-calendarEvent * openCalendar(char * pathToCalendar) {
+calendarEvent * openCalendar(char * pathNewCalendar, char * calendarPreviousName) {
     FILE *calendarSave;
     char buffer[214];
 
-    calendarSave = fopen(pathToCalendar, "r");
+    calendarSave = fopen(pathNewCalendar, "r");
 
     if (calendarSave == NULL){
         printf("Error while opening the file\n");
@@ -285,8 +318,13 @@ calendarEvent * openCalendar(char * pathToCalendar) {
     }
 
     // Get name of the calendar by its path
-    char * calendarName = strrchr(pathToCalendar, '/') + 1;
-    printf("DEBUG calendar name: %s\n", calendarName);
+    char * calendarName = strrchr(pathNewCalendar, '/') + 1;
+    // calendarName contain "nameCalendar.cld"
+
+    //reset of the calendar name content
+    strncpy(calendarPreviousName, "", 50);
+    //copy of the new name without the extension
+    strncpy(calendarPreviousName, calendarName, strlen(calendarName) - 4);
 
     int date, hour, firstLine = 1;
     char commentary[200] = {0};
