@@ -231,6 +231,15 @@ TP2_prim_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 TP2_prim_SOURCE_DIR:STATIC=/Users/cosabier/2-hexagone/hexa_TP_
 
+//Value Computed by CMake
+TPPrim_BINARY_DIR:STATIC=/Users/cosabier/2-hexagone/hexa_TP_/cmake-build-run
+
+//Value Computed by CMake
+TPPrim_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+TPPrim_SOURCE_DIR:STATIC=/Users/cosabier/2-hexagone/hexa_TP_
+
 
 ########################
 # INTERNAL cache entries

@@ -1,24 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "UI.h"
-#include "library.h"
+#include "functions/library.h"
+#include "string.h"
 
 int main()
 {
-    Vertex* listVertex = (Vertex*) malloc(5 * sizeof(Vertex));
+    Graph * graphFile = loadGraph("graph/graph_1.txt");
 
-    for (int i = 0; i < 5; ++i) {
+    printf("%s\n", graphFile->V);
+//    printGraph(graphFile);
+    Graph * MST = prim(graphFile, 'F');
+    printGraph(MST);
 
-        listVertex[i].name[0] = 'A' + i;
-        listVertex[i].name[1] = '\0';
-        listVertex[i].weight = i;
-    }
-
-    for (int i = 0; i < 5; ++i) {
-        printf("%s, %d\n", listVertex[i].name, listVertex[i].weight);
-    }
-
-//    inputMenu();
+    saveGraph(MST, "graph/MST_1_F");
     return 0;
 }

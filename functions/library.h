@@ -1,12 +1,20 @@
+#ifndef LIBRARY_H
+#define LIBRARY_H
 
-typedef struct edge {
-    char src[2], dest[2];
-    int weight;
-} Edge;
+#define MAX_SIZE_GRAPH 1000
 
-typedef struct vertex {
-    char name[4];
-    int weight;
-} Vertex;
+typedef struct graph {
+    char * V;
+    char ** Edge;
+} Graph;
 
-Vertex * loadGraph(char * filename);
+//region File management
+Graph * loadGraph(char * filename);
+void saveGraph(Graph * graph, char * filename);
+//endregion
+int numberOfEdges(Graph * graph);
+Graph * prim(Graph * graph, char initialVertex);
+char ** getEdgesConnected(Graph * graph, char * includedVertices);
+
+
+#endif

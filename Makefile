@@ -5,10 +5,10 @@
 .SUFFIXES:.c .o
 
 #Nom de l'executable
-EXEC=main
+EXEC=hexagonTP2
 
 #Liste des fichiers sources separes par des espaces
-SOURCES=main.c essai.c
+SOURCES=main.c funtions/library.c functions/UI.c
 #Liste des fichiers objets
 OBJETS=$(SOURCES:%.c=%.o)
 
@@ -36,5 +36,6 @@ depend:
 	rm dependances
 
 #DEPENDANCIES
-main.o: main.c essai.o
-essai.o: essai.c essai.h 
+main.o: main.c UI.o library.o
+UI.o: functions/UI.c functions/UI.h
+library.o: functions/library.c functions/library.h	

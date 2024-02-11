@@ -1,5 +1,5 @@
 #include "UI.h"
-#include "library.h"
+//#include "library.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -48,3 +48,17 @@ int inputMenu() {
     return selection;
 }
 
+void printGraph(Graph * graph) {
+    printf("The graph is : \n");
+    printf("Vertices : %s\n", graph->V);
+    printf("Edges : \n");
+    for (int i = 0; i < numberOfEdges(graph); ++i) {
+        char vertex1, vertex2, weight[5];
+
+        vertex1 = graph->Edge[i][0];
+        vertex2 = graph->Edge[i][1];
+        strcpy(weight, graph->Edge[i] + 2);
+
+        printf("%c <--> %c  w = %s\n",vertex1, vertex2 , weight);
+    }
+}
