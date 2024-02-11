@@ -5,4 +5,8 @@ include_directories(functions)
 
 file(GLOB SOURCES "main.c" "essai.c")
 
-add_executable(MyProject ${SOURCES})
+add_executable(MyProject ${SOURCES}
+        functions/UI.c
+        functions/UI.h
+        functions/library.h
+        functions/library.c)
