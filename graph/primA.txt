@@ -1,0 +1,7 @@
+tree
+ABDECF
+AB2
+BD2
+AE3
+BC3
+CF3

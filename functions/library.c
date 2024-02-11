@@ -5,18 +5,36 @@
 
 //region File management
 
-Graph * loadGraph(char * filename) {
+Graph * loadGraph(char * filename, int isTree) {
 
     FILE * graphFile = fopen(filename, "r");
     if (graphFile == NULL) {
-        printf("Error: graphFile not found\n");
+        printf("\n/!\\Error: %s not found\n", filename);
         return NULL;
     }
 
     char bufferVertices[200];
-    int n;
+    int n, graphIsTree = 0;
 
-    fscanf(graphFile, "%s", bufferVertices);
+    // In case we want to read a MST not any graph
+    if(isTree){
+        fscanf(graphFile, "%s", bufferVertices);
+        if(strcmp(bufferVertices, "tree") == 0){
+            graphIsTree = 1;
+            fscanf(graphFile, "%s", bufferVertices);
+        } else {
+            printf("This file do not contain a tree\n");
+            return NULL;
+        }
+    } else {
+        // In case we just want to read a graph not a MST
+        fscanf(graphFile, "%s", bufferVertices);
+        if(strcmp(bufferVertices, "tree") == 0){
+            // We read the second line since the first one is the "tree" mark
+            fscanf(graphFile, "%s", bufferVertices);
+        }
+    }
+
     Graph * graph = (Graph*) malloc(sizeof(Graph));
     n = strlen(bufferVertices);
 
@@ -53,6 +71,12 @@ Graph * loadGraph(char * filename) {
         i++;
     }
 
+    // If the graph is a tree, we mark it in the last edge
+    if(graphIsTree){
+        graph->Edge[MAX_SIZE_GRAPH - 1] = (char *) malloc(5 * sizeof(char));
+        strcpy(graph->Edge[MAX_SIZE_GRAPH - 1], "tree");
+    }
+
     fclose(graphFile);
     return graph;
 }
@@ -60,8 +84,16 @@ Graph * loadGraph(char * filename) {
 void saveGraph(Graph * graph, char * filename) {
     FILE * graphFile = fopen(filename, "w");
     if (graphFile == NULL) {
-        printf("Error: graphFile not found\n");
+        printf("Error: %s couldn't be reach\n", filename);
         return;
+    }
+    // If the graph is a tree, we mark it in the first line
+
+    if(
+            graph->Edge[MAX_SIZE_GRAPH - 1] != NULL &&
+            strcmp(graph->Edge[MAX_SIZE_GRAPH - 1], "tree") == 0
+        ){
+        fprintf(graphFile, "%s\n", "tree");
     }
 
     fprintf(graphFile, "%s\n", graph->V);
@@ -94,11 +126,14 @@ Graph * prim(Graph * graph, char initialVertex) {
     MST -> V    = (char *) malloc((strlen(graph->V) + 1) * sizeof(char));
     MST -> Edge = (char **) malloc(MAX_SIZE_GRAPH * sizeof(char *));
 
+    MST -> Edge[MAX_SIZE_GRAPH - 1] = (char *) malloc(5 * sizeof(char));
+    strcpy(MST->Edge[MAX_SIZE_GRAPH - 1], "tree");
+
     MST -> V [0] = initialVertex;
     MST -> V [strlen(graph->V)] = '\0';
 
     // for each vertex in the graph, add the edge that is outside the tree with the smallest weight
-    for (int i = 1; i < strlen(graph->V) + 1; ++i) {
+    for (int i = 1; i < strlen(graph->V); ++i) {
         includedEdges[i] = (char *) malloc(7 * sizeof(char));
         char * edgeToInclude = (char *) malloc(7 * sizeof(char));
         int minWeight = 1e6;
@@ -143,6 +178,7 @@ Graph * prim(Graph * graph, char initialVertex) {
 }
 
 int getDistanceFromTop(Graph * MST, char targetVertex){
+
     if(targetVertex == MST->V[0]){
         return 0;
     }
@@ -173,6 +209,19 @@ char * getEdgeByChildVertex(Graph * graph, char childVertex){
         edgeIndex++;
     }
     return graph->Edge[edgeIndex];
+}
+
+void freeGraph(Graph * graph) {
+    if (graph != NULL) {
+        if(graph->V != NULL) free(graph->V);
+
+        for (int i = 0; i < MAX_SIZE_GRAPH; ++i) {
+            if (graph->Edge[i] != NULL)
+                free(graph->Edge[i]);
+        }
+        free(graph->Edge);
+        free(graph);
+    }
 }
 
 //endregion

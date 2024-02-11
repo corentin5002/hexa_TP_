@@ -12,10 +12,10 @@ int inputMenu() {
     do {
 
         printf("Here are the options available : \n\n"
-               "0 - Load a graph\n"
+               "0 - Load a graph / see current one\n"
                "1 - Save the graph\n"
                "2 - Get the minimal spanning tree (Algo Prim)\n"
-               "3 - Load a tree\n"
+               "3 - Load a tree / see current one\n"
                "4 - Save the tree\n"
                "5 - Get distance to a vertex (from the tree)\n"
                "6 - Quit the application\n");
@@ -49,7 +49,7 @@ int inputMenu() {
 }
 
 void printGraph(Graph * graph) {
-    printf("The graph is : \n");
+    printf("The current graph is : \n\n");
     printf("Vertices : %s\n", graph->V);
     printf("Edges : \n");
     for (int i = 0; i < numberOfEdges(graph); ++i) {
@@ -61,4 +61,17 @@ void printGraph(Graph * graph) {
 
         printf("%c <--> %c  w = %s\n",vertex1, vertex2 , weight);
     }
+}
+
+char * getFilePath() {
+    char filename[100];
+    printf("Enter the filename: ");
+    fgets(filename, sizeof(filename), stdin);
+    filename[strcspn(filename, "\n")] = 0;
+
+    // add the path to graph/ directory
+    char * path= (char *) malloc(106 * sizeof(char));
+    strcpy(path, "./graph/");
+    strcat(path, filename);
+    return path;
 }

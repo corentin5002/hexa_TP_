@@ -6,3 +6,4 @@
 int inputMenu();
 
 void printGraph(Graph * graph);
+char * getFilePath();

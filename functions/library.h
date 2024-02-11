@@ -9,7 +9,7 @@ typedef struct graph {
 } Graph;
 
 //region File management
-Graph * loadGraph(char * filename);
+Graph * loadGraph(char * filename, int isTree);
 void saveGraph(Graph * graph, char * filename);
 //endregion
 //region Graph functions
@@ -17,6 +17,7 @@ int numberOfEdges(Graph * graph);
 Graph * prim(Graph * graph, char initialVertex);
 int getDistanceFromTop(Graph * MST, char targetVertex);
 char * getEdgeByChildVertex(Graph * graph, char childVertex);
+void freeGraph(Graph * graph);
 //endregion
 
 #endif
