@@ -8,11 +8,15 @@ int main()
 {
     Graph * graphFile = loadGraph("graph/graph_1.txt");
 
-    printf("%s\n", graphFile->V);
+//    printf("%s\n", graphFile->V);
 //    printGraph(graphFile);
     Graph * MST = prim(graphFile, 'F');
     printGraph(MST);
 
-    saveGraph(MST, "graph/MST_1_F");
+//    saveGraph(MST, "graph/MST_1_F");
+
+    printf("======================\n");
+    getDistanceFromTop(MST, 'D');
+
     return 0;
 }

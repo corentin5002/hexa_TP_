@@ -12,9 +12,11 @@ typedef struct graph {
 Graph * loadGraph(char * filename);
 void saveGraph(Graph * graph, char * filename);
 //endregion
+//region Graph functions
 int numberOfEdges(Graph * graph);
 Graph * prim(Graph * graph, char initialVertex);
-char ** getEdgesConnected(Graph * graph, char * includedVertices);
-
+int getDistanceFromTop(Graph * MST, char targetVertex);
+char * getEdgeByChildVertex(Graph * graph, char childVertex);
+//endregion
 
 #endif

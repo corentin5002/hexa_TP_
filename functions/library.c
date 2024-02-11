@@ -98,7 +98,7 @@ Graph * prim(Graph * graph, char initialVertex) {
     MST -> V [strlen(graph->V)] = '\0';
 
     // for each vertex in the graph, add the edge that is outside the tree with the smallest weight
-    for (int i = 1; i < strlen(graph->V); ++i) {
+    for (int i = 1; i < strlen(graph->V) + 1; ++i) {
         includedEdges[i] = (char *) malloc(7 * sizeof(char));
         char * edgeToInclude = (char *) malloc(7 * sizeof(char));
         int minWeight = 1e6;
@@ -142,6 +142,38 @@ Graph * prim(Graph * graph, char initialVertex) {
     return MST;
 }
 
+int getDistanceFromTop(Graph * MST, char targetVertex){
+    if(targetVertex == MST->V[0]){
+        return 0;
+    }
+    char top = MST->V[0];
+
+    // Get index of that connects targetVertex to the tree
+    int edgeIndex = 0;
+    while(MST->Edge[edgeIndex][1] != targetVertex){
+        edgeIndex++;
+    }
+
+    int distanceToTop = 0;
+    char * currentEdge = MST->Edge[edgeIndex];
+    while (currentEdge[0] != top){
+        // Increment the distance by the weight of the current edge
+        distanceToTop += atoi(currentEdge+2);
+        // Get edge that leads to the antecedent of this vertex in the tree
+        currentEdge = getEdgeByChildVertex(MST, currentEdge[0]);
+    }
+    distanceToTop += atoi(currentEdge+2);
+
+    return distanceToTop;
+}
+
+char * getEdgeByChildVertex(Graph * graph, char childVertex){
+    int edgeIndex = 0;
+    while(graph->Edge[edgeIndex][1] != childVertex){
+        edgeIndex++;
+    }
+    return graph->Edge[edgeIndex];
+}
 
 //endregion
 
