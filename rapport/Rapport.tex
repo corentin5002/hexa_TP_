@@ -1,0 +1,323 @@
+\documentclass[12pt, a4paper,twoside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+\usepackage{mathtools,amssymb,amsthm,tipa}
+
+\usepackage[top=3cm,headsep=1.5cm,bottom=2.5cm,right=2.5cm,left=2.5cm]{geometry}
+
+\usepackage{babel}
+%\usepackage{appendix}
+
+%================image=================
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\renewcommand{\listfigurename}{Table des figures}
+%\usepackage{wrapfig}
+%============header and foot============
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{1pt}
+\fancyhead[L]{\bfseries Algorithmique Numérique}
+\fancyhead[R]{\includegraphics[scale=0.1]{images/hexagonLogo.png}}
+\fancyfoot[L]{SABIER Corentin}
+\fancyfoot[R]{2023-2024}
+
+%=================other================
+\renewcommand{\contentsname}{Table des matières}
+
+%=================code=================
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+
+%==============code settings==========
+\definecolor{darkWhite}{rgb}{0.95,0.95,0.95}
+\definecolor{myred}{rgb}{1,0.22,0.22}
+\definecolor{mypurple}{rgb}{0.74,0.36,0.97}
+\definecolor{myblue}{rgb}{0.2,0.36,0.97}
+\definecolor{codegreen}{rgb}{0,0.7,0}
+
+\lstdefinestyle{python}{
+    language=Python,      %Langage de prog
+    commentstyle=\color{gray},
+    keywordstyle=\color{mypurple},
+    numberstyle=\tiny\color{black},
+    stringstyle=\color{codegreen},
+    mathescape,
+    aboveskip=3mm,
+    belowskip=-2mm,
+    backgroundcolor=\color{darkWhite},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    deletekeywords={...},
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    framexleftmargin=16pt,
+    framextopmargin=3pt,
+    framexbottommargin=6pt,
+    frame=tb,
+    keepspaces=true,
+    morekeywords={*,...},
+    numbers=left,
+    numbersep=8pt,
+    rulecolor=\color{black},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stepnumber=1,
+    tabsize=4,
+    title=\lstname,
+}
+\lstdefinestyle{Clang}{
+    language=C,      %Langage de prog
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{myblue},
+    numberstyle=\tiny\color{black},
+    stringstyle=\color{gray},
+    mathescape,
+    aboveskip=3mm,
+    belowskip=-2mm,
+    backgroundcolor=\color{darkWhite},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    deletekeywords={...},
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    framexleftmargin=16pt,
+    framextopmargin=3pt,
+    framexbottommargin=6pt,
+    frame=tb,
+    keepspaces=true,
+    morekeywords={*,...},
+    numbers=left,
+    numbersep=8pt,
+    rulecolor=\color{black},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stepnumber=1,
+    tabsize=4,
+    title=\lstname,
+}
+
+\lstdefinestyle{bash}{
+    language=bash,      %Langage de prog
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{myblue},
+    numberstyle=\tiny\color{black},
+    stringstyle=\color{gray},
+    mathescape,
+    aboveskip=3mm,
+    belowskip=-2mm,
+    backgroundcolor=\color{darkWhite},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    deletekeywords={...},
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    framexleftmargin=16pt,
+    framextopmargin=3pt,
+    framexbottommargin=6pt,
+    frame=tb,
+    keepspaces=true,
+    morekeywords={*,...},
+    numbers=left,
+    numbersep=8pt,
+    rulecolor=\color{black},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stepnumber=1,
+    tabsize=4,
+    title=\lstname,
+}
+
+
+%Pour page de titre
+\title{Rapport TP2 C - Prim}
+\author{Corentin SABIER}
+\date{11/02/2024}
+%fin
+
+
+\begin{document}
+    \begin{titlepage}
+        \maketitle
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.75]{./images/hexagonTitlePAge.png}
+        \end{figure}
+    \end{titlepage}
+
+    \tableofcontents
+
+    \section{Description du code}
+
+    \subsection{Remarque sur le rendu}
+
+    Tout d'abord, vous remarquerez que la qualité du travail pour ce TP est en-dessous de ce que j'ai rendu pour le premier TP. Je m'en excuse et
+    je compte me mettre à niveau pour le dernier TP. Aussi je n'ai pas autant essayé de soigner les vérifications d'input utilisateurs, désolé si
+    ça génère de la frustration pendant la navigation/correction.
+
+    \subsection{Partis pris}
+
+    Je vais succinctement décrire les libertés que j'ai pri.
+%        i want to use a numeroted list
+
+    \begin{enumerate}
+        \item Comme vu en présentiel, vous aviez parlé d'utiliser la pile pour implémenter notre solution. Étant pris par le temps j'ai décider de simplement résoudre le problème avec les solutions qui
+        me venaient naturellement sans orienter ma réflexion vers l'utilisation d'une structure en particulier.
+
+        \item Je n'ai pas saisi/ pris le temps de comprendre comment implémenter une structure LH/LV pour les arbres générés par l'algorithme de Prim.
+
+        \item Ainsi, la structure de graphe que j'ai utilisé est la même pour un grpah quelconque et pour un arbre couvrant de poids minimal (\bf{MST}).
+    \end{enumerate}
+
+    \subsection{Fonctionnement du menu}
+
+    Comme pour le TP 1, le menu est composé de 6 options :
+
+    \begin{itemize}
+        \item \bf{0.} Charger un graphe ou afficher celui actuellement chargé
+        \item \bf{1.} Sauvegarder le graphe chargé
+        \item \bf{2.} Lancer Prim sur le graph chargé
+        \item \bf{3.} Charger un MST ou afficher l'arbre généré par Prim
+        \item \bf{4.} Sauvegarder le MST dans un fichier
+        \item \bf{5.} Quitter le programme
+    \end{itemize}
+
+    
+    \subsection{Fonctionnalitées}
+
+        Je ne vais expliciter ici que les fonctions qui pourraient contenir quelques ambiguïtés quant à leurs intéractions utilisateurs.
+
+        \subsubsection{Charger/sauvegarder un graph/arbre}
+            Ces fonctionnalités affiche automatiquement le graph s'il est chargé, la fonction prend en compte le chemin vers le
+            repertoire \textit{graph/} et ne se soucis pas de l'extension que vous pouvez mettre au fichier du graphe.
+            \newline
+            \newline
+
+            \textbf{Si vous créez vos fichiers} de graphes ou d'arbres. La seule différence utilisateurs entre un graphe et un arbre dans un fichier et la mention à la première ligne de "tree"
+            \textbf{si c'est un arbre}.
+            \\
+            \newline
+            Voici un exemple de fichier contenant un arbre :
+
+            \lstset{style=Clang}
+            \begin{lstlisting}[language=Clang, caption=graphTTP.txt]
+ABCDEF
+AB2
+AD3
+AE3
+BC3
+BD2
+BE4
+CE5
+CF3
+DE6
+DF3
+EF5\end{lstlisting}
+    \newpage
+    \section{Jeux d'éssais}
+
+    \subsection{Test avec le graphe de l'énoncé}
+
+    Ce test utilise le graph fourni dans l'énoncé du TP, soit :
+
+%    i want to center a graphics
+
+    \begin{center}
+        \includegraphics[scale=0.5]{images/graphTP.png}
+    \end{center}
+
+    On part du sommet \textbf{A} et est supposé obtenir l'arbre suivant :
+
+    \begin{center}
+        \includegraphics[scale=0.5]{images/treeTPA.png}
+    \end{center}
+
+    et l'on l'arbre suivant avec notre programme :
+
+    \begin{lstlisting}
+Enter a number between 0 and 6: 3
+
+Loading tree
+The current graph is :
+
+Vertices : ABDECF
+Edges :
+A <--> B  w = 2
+B <--> D  w = 2
+A <--> E  w = 3
+B <--> C  w = 3
+C <--> F  w = 3
+    \end{lstlisting}
+    \subsubsection{Prim depuis F}
+
+    on obtient bien l'arbre suivant :
+
+    \begin{lstlisting}
+Enter a number between 0 and 6: 3
+
+Loading tree
+The current graph is :
+
+Vertices : FCBADE
+Edges :
+F <--> C  w = 3
+C <--> B  w = 3
+B <--> A  w = 2
+B <--> D  w = 2
+A <--> E  w = 3
+    \end{lstlisting}
+    \subsection{Test avec un graph vide}
+
+    Le graph ne contient que des sommets et aucune arête.
+
+    \begin{lstlisting}[]
+Enter a number between 0 and 6: 2
+
+Getting minimal spanning tree (Using Prim)
+The graph is empty or it doesn't have any edge, no MST can be found
+    \end{lstlisting}
+
+    \subsection{Test avec un graph non connexe}
+
+    Le graph contient deux composantes connexes. Il ne renverras l'arbre couvrant que de la composante connexe contenant le sommet demandé.
+
+    \subsection{Test relance Prim}
+
+        Cette fonctionnalité a été cassé par la modification à la dernière minute de la structure du graphe, plus exactement c'est le \textit{freeGraph()} qui est cassé.
+
+    \subsection{Test distance d'un point au sommet de l'arbre}
+
+    Dans le premier MST (Sommet de départ A, graph de l'énoncé), la distance à F est :
+
+    \begin{lstlisting}
+Enter a number between 0 and 6: 5
+
+Getting distance to a vertex (from the tree)
+Enter the target vertex: F
+The distance from the top to F is 8
+    \end{lstlisting}
+    \subsection{Test distance d'un point qui n'est pas dans l'arbre}
+
+    \begin{lstlisting}
+Enter a number between 0 and 6: 5
+
+Getting distance to a vertex (from the tree)
+Enter the target vertex: G
+The vertex G is not in the tree
+    \end{lstlisting}
+
+\end{document}
